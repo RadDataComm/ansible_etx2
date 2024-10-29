@@ -1,0 +1,13 @@
+ancestor: null
+releases:
+  1.0.0:
+    modules:
+      - description: Run arbitrary commands on an ETX-2 device
+        name: etx2_command
+        namespace: ""
+    plugins:
+      cliconf:
+        - description: Use rad cliconf to run command/s on RAD Data Communications platforms
+          name: rad
+          namespace: null
+    release_date: "2024-11-23"
