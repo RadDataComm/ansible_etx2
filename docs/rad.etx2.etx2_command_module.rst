@@ -47,7 +47,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>List of commands to send to the remote ETX-2 device. The resulting output from the command is returned.</div>
+                        <div>List of commands to send to the remote ETX-2 device. The resulting output from each command is returned.</div>
                 </td>
             </tr>
     </table>
@@ -110,7 +110,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                       <span style="color: purple">list</span>
                     </div>
                 </td>
-                <td>always apart from low level errors (such as action plugin)</td>
+                <td>Always, apart from low level errors (such as action plugin)</td>
                 <td>
                             <div>The set of responses from the commands</div>
                     <br/>
@@ -127,7 +127,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                       <span style="color: purple">list</span>
                     </div>
                 </td>
-                <td>always apart from low level errors (such as action plugin)</td>
+                <td>Always, apart from low level errors (such as action plugin)</td>
                 <td>
                             <div>The value of stdout split into a list</div>
                     <br/>
