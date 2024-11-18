@@ -1,0 +1,7 @@
+configure system contact momo16
+# this is a comment line
+configure system location TLV14
+copy startup-config user-default-config
+#copy startup-config tftp://1.17.160.184/st1.txt
+show configure flows summary brief
+

@@ -1,0 +1,7 @@
+# Create two management targets
+configure management snmp
+no target Domain2
+exit all
+configure management snmp
+no target Domain3
+exit all

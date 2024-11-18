@@ -1,0 +1,27 @@
+- name: "Local play"
+  hosts: all
+  gather_facts: no
+
+  vars:
+    ansible_user: su
+    ansible_password: 1234
+    ansible_connection: ansible.netcommon.network_cli
+    ansible_network_os: ansible.legacy.rad
+
+  tasks:
+
+    - name: "Execute Copy Startup to User-default"
+      ansible.legacy.etx2_command:
+        commands: [ 'copy startup-config user-default-config' ]
+      register: echo
+
+    - name: "Wait for completion of copy operation"
+      ansible.legacy.etx2_command:
+        commands: show file copy
+      register: result
+#     until: result.stdout[0].find("Ended OK") != -1
+      until: "'Transferring Data' not in result.stdout[0]"
+      retries: 6
+      delay: 15
+      failed_when: "'Failed' in result.stdout[0]"
+
