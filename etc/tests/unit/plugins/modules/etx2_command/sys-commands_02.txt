@@ -1,0 +1,6 @@
+configure system contact momo15
+# this is a comment line
+configure system location TLV13
+#copy startup-config user-default-config
+show configure flows summary brief
+

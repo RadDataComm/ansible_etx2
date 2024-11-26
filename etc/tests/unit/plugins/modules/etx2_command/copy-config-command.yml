@@ -6,17 +6,17 @@
     ansible_user: su
     ansible_password: 1234
     ansible_connection: ansible.netcommon.network_cli
-    ansible_network_os: ansible.legacy.rad
+    ansible_network_os: rad.etx2.rad
 
   tasks:
 
     - name: "Execute Copy Startup to User-default"
-      ansible.legacy.etx2_command:
+      rad.etx2.etx2_command:
         commands: [ 'copy startup-config user-default-config' ]
       register: echo
 
     - name: "Wait for completion of copy operation"
-      ansible.legacy.etx2_command:
+      rad.etx2.etx2_command:
         commands: show file copy
       register: result
 #     until: result.stdout[0].find("Ended OK") != -1

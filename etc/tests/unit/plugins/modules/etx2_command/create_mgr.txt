@@ -4,5 +4,4 @@ exit all
 configure management snmp
 target Domain3
 address udp-ipv4-domain 172.17.233.70
-no shutdown
 exit all
