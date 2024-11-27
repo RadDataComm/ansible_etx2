@@ -18,8 +18,14 @@
 
   tasks:
 
-    - name: "Execute CLI script create_mgr from file"
+    - name: "Execute CLI script"
       rad.etx2.etx2_command:
         commands: "{{ lookup('file', file_name) | split('\n') }}"
       register: echo
+      when: file_name is defined
+      
+    - name: "Error if file_name is not provided"
+      ansible.builtin.debug:
+        msg: 'Error: file_name is not provided! Please add -e "file_name=/path/to/myfile.txt"'
+      when: file_name is not defined
 

@@ -1,0 +1,32 @@
+# !:# Linux pre-config
+# !:# groupadd nmsdev
+# !:# useradd -m -g nmsdev nmsdev 
+# !:# useradd -g nmsdev -G wheel -m nmsdev
+# !:# passwd nmsdev
+#------------------------------------------------------------------------------------------
+# use ssh-keyscan 172.18.178.111 to get keys
+# run this script and see host key in output
+# 172.18.178.111 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFFvfyVFTVvlLKoL+o8yz72OWpR4ctcPMGpk+NDwph
+# The VM should have Ansible installed for creating the tarball.
+# You can use one of: ssh-ed25519, ssh-rsa hostkey out of the output.
+#------------------------------------------------------------------------------------------
+#open sftp://root:marketing@172.18.178.111 -hostkey="ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCa12pGWUNLOF5AQ/4LmRKgvtEp4JVMdt/bfk6mWxoTPFH7s7VpWadkGxzUhcw38H/6G5aZUatuenME7Ha1H6t0WP5WFN4bCAxEVbCV4FSIeiHuQqtXRmwjO519xi/9hHwe6Ulq5gYcdD+T5ns82Mj/ausYsCrwlVdbCnxCOGuZINhOvM1kf9CHQ+iFwyEZprDOCw1hgKUHRwLZJl44Bg1hdRoVyYQdxsEV2F/IbZgdvJ/eXeNKLzAENRkzP6YbLb2j2DmQiLGLOiA9mensjQxuUx/Eyy2KTsZdg1yM96OZOkEFF+dQHFbOXOA2MmsMUHcD1tomMMujuROuIZLheE+5vRWY8uP38elCD5heyVi4C3xaK8rtAvlSF2W5wh1DlfNyaQqPcLulJdfgkdffh+yk/YhhCLDY+Et0PcV6K/AL4dK8MK5whiyswBdWDs8P4BhK37B1TU4fo5advNTjBvJwe1KAMB+2GdvsVsyZdx9sSYDGVo+RxHIIPVFkCNL4URE="
+open sftp://root:marketing@172.18.178.111 -hostkey="ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFFvfyVFTVvlLKoL+o8yz72OWpR4ctcPMGpk+NDwphSR"
+#open sftp://nmsdev:nmsdev@172.18.178.69 -hostkey="ssh-ed25519 256 Bi3VToCr5OyGejPPeyPAwnp88pOdWRMLibp23pu75pY="
+call which groupadd
+call groupadd nmsdev
+#------------------------------------------------------------------------------------------
+# -g sets user's main group
+# -G sets additional group for the user. The wheel groups is the group of the sudoers
+# -m tells to create user-home directory (usually /home/<user-name>
+# last argument is the user name
+#------------------------------------------------------------------------------------------
+call useradd -g nmsdev -G wheel -m nmsdev
+#call passwd nmsdev
+#------------------------------------------------------------------------------------------
+# 'call passwd nmsdev' is interactive, and system asks to enter password twice.
+# Therefore we do it by: echo nmsdev:nmsdev | chpasswd
+#------------------------------------------------------------------------------------------
+call echo nmsdev:nmsdev | chpasswd
+close
+exit

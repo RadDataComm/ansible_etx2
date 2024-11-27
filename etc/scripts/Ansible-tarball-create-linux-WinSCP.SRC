@@ -1,0 +1,68 @@
+# !:# Linux pre-config
+# !:# groupadd nmsdev
+# !:# useradd -m -g nmsdev nmsdev 
+# !:# useradd -g nmsdev -G wheel -m nmsdev
+# !:# passwd nmsdev
+# use ssh-keyscan 172.18.178.111 to get keys
+# run this script and see host key in output
+# 172.18.178.111 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFFvfyVFTVvlLKoL+o8yz72OWpR4ctcPMGpk+NDwph
+# The VM should have Ansible installed for creating the tarball.
+# Add the create to sudoers (line 4)
+#open sftp://root:marketing@172.18.178.111 -hostkey="ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCa12pGWUNLOF5AQ/4LmRKgvtEp4JVMdt/bfk6mWxoTPFH7s7VpWadkGxzUhcw38H/6G5aZUatuenME7Ha1H6t0WP5WFN4bCAxEVbCV4FSIeiHuQqtXRmwjO519xi/9hHwe6Ulq5gYcdD+T5ns82Mj/ausYsCrwlVdbCnxCOGuZINhOvM1kf9CHQ+iFwyEZprDOCw1hgKUHRwLZJl44Bg1hdRoVyYQdxsEV2F/IbZgdvJ/eXeNKLzAENRkzP6YbLb2j2DmQiLGLOiA9mensjQxuUx/Eyy2KTsZdg1yM96OZOkEFF+dQHFbOXOA2MmsMUHcD1tomMMujuROuIZLheE+5vRWY8uP38elCD5heyVi4C3xaK8rtAvlSF2W5wh1DlfNyaQqPcLulJdfgkdffh+yk/YhhCLDY+Et0PcV6K/AL4dK8MK5whiyswBdWDs8P4BhK37B1TU4fo5advNTjBvJwe1KAMB+2GdvsVsyZdx9sSYDGVo+RxHIIPVFkCNL4URE="
+open sftp://root:marketing@172.18.178.111 -hostkey="ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFFvfyVFTVvlLKoL+o8yz72OWpR4ctcPMGpk+NDwphSR"
+#open sftp://nmsdev:nmsdev@172.18.178.69 -hostkey="ssh-ed25519 256 Bi3VToCr5OyGejPPeyPAwnp88pOdWRMLibp23pu75pY="
+#open sftp://nmsdev:nmsdev@172.17.171.39 -hostkey="ssh-ed25519 256 P23v1e+M7PPmGuIYf//hKx/EFvTrsWmWGsZMRj2EPu0="
+
+#-------------------------------------------------------------------------------------
+# option batch continue to avoid stop on existing objects and other errors
+# still get in log annoying Error creating folder and others but Skip will be applied
+#-------------------------------------------------------------------------------------
+# Unable to exclude .git folder and .gitignore
+
+call mkdir -p /home/nmsdev/netauto/ansible_etx2/1.0.0/ansible_etx2/changelogs
+call mkdir -p /home/nmsdev/netauto/ansible_etx2/1.0.0/ansible_etx2/docs
+call mkdir -p /home/nmsdev/netauto/ansible_etx2/1.0.0/ansible_etx2/etc
+call mkdir -p /home/nmsdev/netauto/ansible_etx2/1.0.0/ansible_etx2/meta
+call mkdir -p /home/nmsdev/netauto/ansible_etx2/1.0.0/ansible_etx2/plugins
+call mkdir -p /home/nmsdev/netauto/tarballs
+option transfer ascii
+put C:\netauto\Ansible\ansible_etx2\1.0.0\ansible_etx2\changelogs /home/nmsdev/netauto/ansible_etx2/1.0.0/ansible_etx2/changelogs
+put C:\netauto\Ansible\ansible_etx2\1.0.0\ansible_etx2\docs /home/nmsdev/netauto/ansible_etx2/1.0.0/ansible_etx2/docs
+put C:\netauto\Ansible\ansible_etx2\1.0.0\ansible_etx2\etc /home/nmsdev/netauto/ansible_etx2/1.0.0/ansible_etx2/etc
+put C:\netauto\Ansible\ansible_etx2\1.0.0\ansible_etx2\meta /home/nmsdev/netauto/ansible_etx2/1.0.0/ansible_etx2/meta
+put C:\netauto\Ansible\ansible_etx2\1.0.0\ansible_etx2\plugins /home/nmsdev/netauto/ansible_etx2/1.0.0/ansible_etx2/plugins
+put C:\netauto\Ansible\ansible_etx2\1.0.0\ansible_etx2\CHANGELOG.rst /home/nmsdev/netauto/ansible_etx2/1.0.0/ansible_etx2/CHANGELOG.rst
+put C:\netauto\Ansible\ansible_etx2\1.0.0\ansible_etx2\galaxy.yml /home/nmsdev/netauto/ansible_etx2/1.0.0/ansible_etx2/galaxy.yml
+put C:\netauto\Ansible\ansible_etx2\1.0.0\ansible_etx2\LICENSE /home/nmsdev/netauto/ansible_etx2/1.0.0/ansible_etx2/LICENSE
+put C:\netauto\Ansible\ansible_etx2\1.0.0\ansible_etx2\README.md /home/nmsdev/netauto/ansible_etx2/1.0.0/ansible_etx2/README.md
+
+#------------------------------------------------------------------
+# Now chown and chgroup to all
+#------------------------------------------------------------------
+call chown -R nmsdev:nmsdev /home/nmsdev/netauto/ansible_etx2/1.0.0/ansible_etx2
+
+#------------------------------------------------------------------
+# distlib is needed for Manifest creation out of galaxy.yml
+#------------------------------------------------------------------
+call pip3 install distlib
+
+
+call cd /home/nmsdev/netauto/ansible_etx2/1.0.0/ansible_etx2 && ansible-galaxy collection build --force --output-path /home/nmsdev/netauto/tarballs
+chown nmsdev:nmsdev /home/nmsdev/netauto/tarballs/rad-etx2-1.0.0.tar.gz
+
+#------------------------------------------------------------------
+# 'option batch continue' tells WinSCP to continue executing the script even
+# if an error occurs during a command.
+#------------------------------------------------------------------
+option batch continue
+ls /home/nmsdev/netauto/ansible_etx2/1.0.0
+call tar -tzvf /home/nmsdev/netauto/tarballs/rad-etx2-1.0.0.tar.gz
+
+#------------------------------------------------------------------
+# Copy to local PC the created tarball (from LINUX)
+#------------------------------------------------------------------
+option transfer binary
+get /home/nmsdev/netauto/tarballs/rad-etx2-1.0.0.tar.gz C:\netauto\Ansible\ansible_etx2\1.0.0\ansible_etx2\etc\rad-etx2-1.0.0.tar.gz
+close
+exit
+
