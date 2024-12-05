@@ -1,0 +1,60 @@
+LINUX pre-config
+ see etc\scripts\Ansible-tarball-prebuild-linux-WinSCP.*
+ groupadd nmsdev
+ useradd -m -g nmsdev nmsdev 
+ useradd -g nmsdev -G wheel -m nmsdev
+ passwd nmsdev
+ # ssh-keyscan -t rsa 172.18.178.111
+ # OR
+ # ssh-keyscan -t ssh-ed25519 172.18.178.111
+ # WinSCP script can run with -hostkey="*"
+
+Execute as sudo or root where needed
+
+INSTALL python (3.12)
+ dnf install epel-release
+ dnf install python3.12
+ cd /usr/bin
+ ln -s python3.12 python
+ ln -s python3.12 python3
+ dnf install -y python3.12-pip
+ python3 -m pip install --upgrade pip
+
+INSTALL required libs
+ vi /tmp/requirements.txt / add the following lines:
+  Jinja2==3.1.4
+  paramiko==3.5.0
+  ansible-pylibssh
+ pip3 install -r /tmp/requirements.txt
+
+INSTALL ANSIBLE
+ dnf install ansible
+ TODO - top ansible installation
+ # distlib is needed for Manifest creation out of galaxy.yml
+ pip3 install distlib
+
+ANSIBLE VERIFY
+ ansible-galaxy --version
+
+CREATE COLLECTION TARBALL
+ etc\scripts\Build-tarbal-WinSCP.bat
+ copy etc\.build\rad-etx2-1.0.0.tar.gz to Linux or use tarball created on Linux
+
+TESTING INSTALL COLLECTIONS
+https://docs.ansible.com/ansible/latest/collections_guide/collections_installing.html
+ ansible-galaxy collection install /home/nmsdev/netauto/tarballs/rad-etx2-1.0.0.tar.gz
+
+ADD DEVICE to HOSTS file
+ HOST KEYs
+ # ssh-keyscan -t rsa 172.18.178.111
+ # OR
+ # ssh-keyscan -t ssh-ed25519 172.18.178.111
+ LINUX (build)
+ WinSCP scrip runs with -hostkey="*"
+ 
+ DEVICE
+  ssh-keyscan -t rsa DEVICE_IP
+  For each device – add key (printed to terminal) to /etc/ssh/ssh_known_hosts
+  example: for 172.17.155.44:
+  172.17.155.44 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQCE/cBswFhQVwQHhPKmGSjP2DXBiGUVWhZSskh7BSKwgD4QT78MIrwdaATkH7ugfoE4vecE4RzLzabT6BPexhChPkC2aU6xXo+UPsuLz1MWx61n+IMWHvVNQcFFFCBz1AsUI/cva0eKRoCkEG//SaSJzOYxpXyrbU12sP39SaFk8Q==
+  my44 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQCE/cBswFhQVwQHhPKmGSjP2DXBiGUVWhZSskh7BSKwgD4QT78MIrwdaATkH7ugfoE4vecE4RzLzabT6BPexhChPkC2aU6xXo+UPsuLz1MWx61n+IMWHvVNQcFFFCBz1AsUI/cva0eKRoCkEG//SaSJzOYxpXyrbU12sP39SaFk8Q==
