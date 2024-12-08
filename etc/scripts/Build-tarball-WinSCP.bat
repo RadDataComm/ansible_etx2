@@ -77,6 +77,8 @@ echo open sftp://nmsdev:nmsdev@%NETAUTO_LINUX% -hostkey="*" > %WinSCP_SCR%
 @rem #-------------------------------------------------------------------------------------
 @rem # Unable to exclude .git folder and .gitignore, so list directories and files we need
 
+echo call rm -rf %NETAUTO_LINUX_DIR% >> %WinSCP_SCR%
+echo call rm -f %NETAUTO_LINUX_ROOT_DIR%/tarballs/%TARBALL_NAME%
 echo call mkdir -p %NETAUTO_LINUX_DIR%/changelogs >> %WinSCP_SCR%
 echo call mkdir -p %NETAUTO_LINUX_DIR%/docs >> %WinSCP_SCR%
 @rem echo call mkdir -p %NETAUTO_LINUX_DIR%/etc >> %WinSCP_SCR%
