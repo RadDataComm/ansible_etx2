@@ -28,15 +28,18 @@ set NETAUTO_LINUX=172.18.178.111
 set GALAXY_YML=%PRJ_ROOT%\galaxy.yml
 if "%1" NEQ "" set NETAUTO_LINUX=%1
 
-set VERSION_INPUT=1.0.0
+Set PRJ_VERSION=1.0.0
+echo searching %GALAXY_YML% for version
+Set Set PRJ_VERSION=1.0.0
+For /F "tokens=1,2" %%A in ('findstr /C:"version: " %GALAXY_YML%') Do Set PRJ_VERSION=%%B
+@rem for version take 3 first elements, not full VERSION. 1.0.0.10 will be handled 1.0.0
+@rem For /F "tokens=1,2,3 delims=." %%A in ("%PRJ_VERSION%") Do Set PRJ_VERSION=%%A.%%B.%%C
+
+Set VERSION_INPUT=%PRJ_VERSION%
 if "%2" NEQ "" (
-set VERSION_INPUT=%2
-echo VERSION_INPUT is %VERSION_INPUT%
-) else (
-	echo searching %GALAXY_YML% for version
-	For /F "tokens=1,2" %%A in ('findstr /C:"version: " %GALAXY_YML%') Do Set VERSION_INPUT=%%B
-@rem	echo found version %VERSION_INPUT%
+	set VERSION_INPUT=%2
 )
+
 set NAMESPACE=rad
 set MODULE=etx2
 set TARBALL_BASE_NAME=namespace-name
@@ -51,9 +54,6 @@ set TARBALL_BASE_NAME=%3
 	)
 	set TARBALL_BASE_NAME=%NAMESPACE%-%MODULE%
 )
-set PRJ_VERSION=%VERSION_INPUT%
-@rem for version take 3 first elements, not full VERSION. 1.0.0.10 will be handled 1.0.0
-For /F "tokens=1,2,3 delims=." %%A in ("%VERSION_INPUT%") Do Set PRJ_VERSION=%%A.%%B.%%C
 
 set TARBALL_NAME=%TARBALL_BASE_NAME%-%PRJ_VERSION%.tar.gz
 
@@ -65,6 +65,10 @@ echo build directory %BUILD_ROOT%
 echo Linux station %NETAUTO_LINUX%
 echo TARBALL_NAME is %TARBALL_NAME%
 echo ================================
+
+echo set build version as tag in %GALAXY_YML%
+set BUILD_VERSION_TAG=build.version.tag_%VERSION_INPUT%
+powershell -Command "(gc %GALAXY_YML%) -replace 'build.version.tag_.*$', '%BUILD_VERSION_TAG%' | Out-File -encoding ASCII %GALAXY_YML%"
 
 set NETAUTO_LINUX_ROOT_DIR=/home/nmsdev/netauto
 set NETAUTO_LINUX_DIR=%NETAUTO_LINUX_ROOT_DIR%/%ANSIBLE_PRJ%/%PRJ_VERSION%/%ANSIBLE_PRJ%
