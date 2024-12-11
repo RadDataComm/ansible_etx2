@@ -78,7 +78,7 @@ stdout_l---
         commands:
         - show configure port summary
       register: port_summary
-      
+
     - name: "Pretty Print output of Port Summary DICT"
       ansible.legacy.etx2_list_parser:
         input_table: "{{ port_summary.stdout }}"
@@ -98,7 +98,7 @@ ines:
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import to_lines
-#from ansible.utils.display import Display
+# from ansible.utils.display import Display
 import logging
 import json  # For pretty printing the data structure
 import sys
@@ -113,10 +113,41 @@ display = Display()
 """
 module_name = os.path.splitext(os.path.basename(__file__))[0]  # Get the filename without extension
 log_file = os.path.expanduser('/tmp/rad_ansible_' + module_name + '.log')
-#log_file = os.path.expanduser('/tmp/rad_ansible_etx2_list_parser.log')
+# log_file = os.path.expanduser('/tmp/rad_ansible_etx2_list_parser.log')
 logging.basicConfig(filename=log_file, level=logging.DEBUG,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(module_name)
+
+"""
+Thia method returns a string. e.g. Active Software : sw-pack-1
+This is retrieved by CLI command: show admin software status
+The device response is something like:
+
+Device Software
+-----------------------------------------------------------------------------
+Software Installation Status : Idle
+
+Remaining Time to Confirm Software Installation : --
+
+Active Software : sw-pack-2      Version  : 6.7.1(0.101)
+
+Out of which we should get and return:
+sw-pack-2
+"""
+def ansible_net_image(cli_show_output=None)
+    # Split the text into lines
+    lines = cli_show_output.splitlines()
+    # Regular expression to match the pattern
+    pattern = r"^Active Software\s*:\s*(\S+)"
+    # Loop through each line
+    for line in lines:
+        # Check if the line starts with 'Active Software'
+        if line.strip().startswith("Active Software"):
+            line = line.strip()
+            match = match = re.match(pattern, line)
+            # Print or process the matching line
+            print(line)
+
 
 @staticmethod
 def parse_table(table_str=None, add_new_line_before=True):
@@ -126,37 +157,38 @@ def parse_table(table_str=None, add_new_line_before=True):
     :return: A list of non-empty lines or an empty list if the input is empty.
     """
     if not table_str:
-        return [] # returns an empty list when input is empty
+        return []  # returns an empty list when input is empty
     lines = []
     if isinstance(table_str, list):
         print("The input is a list.")
-        for line in table_str: # Split the string into line
-            line = line.strip(); # Remove leading/trailing whitespace
-            if line: # Check if the line is not empty
-                line = line.replace('|', ' '); # Replace '|' with a space
+        for line in table_str:  # Split the string into line
+            line = line.strip();  # Remove leading/trailing whitespace
+            if line:  # Check if the line is not empty
+                line = line.replace('|', ' ');  # Replace '|' with a space
                 lines.append(line)
     elif isinstance(table_str, str):
         print("The input is a string.")
         # Additional processing for string
         # Split the string into lines and filter out empty lines
-        for line in table_str.splitlines(): # Split the string into line
-            line = line.strip(); # Remove leading/trailing whitespace
-            if line: # Check if the line is not empty
-                line = line.replace('|', ' '); # Replace '|' with a space
+        for line in table_str.splitlines():  # Split the string into line
+            line = line.strip();  # Remove leading/trailing whitespace
+            if line:  # Check if the line is not empty
+                line = line.replace('|', ' ');  # Replace '|' with a space
                 lines.append(line)
     else:
-        lines = ["NAME TYPE","-------------------------------------------","Oiy Vaavoi"]
+        lines = ["NAME TYPE", "-------------------------------------------", "Oiy Vaavoi"]
 
     logger.error("Python logging parse_table the result structure: %s", json.dumps(lines, indent=2))
     print("Python logging parse_table the result structure: {lines}", file=sys.stderr)
-#   lines = [11,12,13,14,15,16,17,18,19,20,200,2000]
-#   logger.error("Python logging parse_table the result structure: %s", json.dumps(lines, indent=2))
-#   print("Python logging parse_table the result structure: {lines}")
+    #   lines = [11,12,13,14,15,16,17,18,19,20,200,2000]
+    #   logger.error("Python logging parse_table the result structure: %s", json.dumps(lines, indent=2))
+    #   print("Python logging parse_table the result structure: {lines}")
     # Check if the line is not emptyleaned_lines_list = [line.strip().replace('\n', '') for line in lines]
     if lines and add_new_line_before:
         lines[0] = '\n' + lines[0].strip()
-    lines = [item.strip() for item in lines] # Remove spaces before/after each entry
+    lines = [item.strip() for item in lines]  # Remove spaces before/after each entry
     return lines
+
 
 @staticmethod
 def parse_table_without_headers(table_str=None, header_rows_num=0, header_delimiter=False, add_new_line_before=True):
@@ -168,7 +200,7 @@ def parse_table_without_headers(table_str=None, header_rows_num=0, header_delimi
     :return: A list of non-empty lines or an empty list if the input is empty.
     """
     if not table_str:
-      return [] # returns an empty list when input is empty
+        return []  # returns an empty list when input is empty
     # Split the string into lines and filter out empty lines
     lines = parse_table(table_str, False)
     if not lines:
@@ -182,6 +214,7 @@ def parse_table_without_headers(table_str=None, header_rows_num=0, header_delimi
     logger.debug("Python logging parse_table_without_header the result structure: %s", json.dumps(lines, indent=2))
     return new_lines
 
+
 @staticmethod
 def create_dict_for_table_row(names, values):
     """
@@ -191,14 +224,15 @@ def create_dict_for_table_row(names, values):
     """
     # Create a dictionary with names as keys and values from the list, defaulting to None for missing values
     ret_dict = {}
-    if ( names and values ):
+    if (names and values):
         logger.error("Python create_dict_for_table_row names: %s", names);
-        #print(f"names in create_dict_for_table_row {names}")
+        # print(f"names in create_dict_for_table_row {names}")
 
         length = min(len(names), len(values))
         diff_len = 0;
         name_index = -1;
-        if len(values) > len(names): # We assume that if there' a name named 'Name' it will contain the additional values
+        if len(values) > len(
+                names):  # We assume that if there' a name named 'Name' it will contain the additional values
             name_index = index = names.index('Name')
             len_diff = len(values) - len(names)
             if name_index > 0:
@@ -216,6 +250,7 @@ def create_dict_for_table_row(names, values):
     ret_dict = {key.strip(): value.strip() for key, value in ret_dict.items()}
     return ret_dict
 
+
 @staticmethod
 def create_dict(names, values):
     """
@@ -226,6 +261,7 @@ def create_dict(names, values):
     # Create a dictionary with names as keys and values from the list, defaulting to None for missing values
     return {name: values[i] if i < len(values) else None for i, name in enumerate(names)}
 
+
 @staticmethod
 def table_to_list_of_dict(table_str=None, header_rows_num=0, header_delimiter=False):
     """
@@ -235,7 +271,7 @@ def table_to_list_of_dict(table_str=None, header_rows_num=0, header_delimiter=Fa
     :return: A list of dictionaries, with names taken from header and values from the rest of the table
     """
     if not table_str:
-        return [] # returns an empty list when input is empty
+        return []  # returns an empty list when input is empty
     # Split the string into lines and filter out empty lines
     dict_lines = parse_table(table_str, False)
     header_and_delimiter_len = header_rows_num + 1 if header_delimiter else header_rows_num
@@ -251,11 +287,12 @@ def table_to_list_of_dict(table_str=None, header_rows_num=0, header_delimiter=Fa
     start_index = header_and_delimiter_len
     for i in range(start_index, len(dict_lines)):
         line_vals_list = [val for val in dict_lines[i].split()]
-#       print(line_vals_list)
+        #       print(line_vals_list)
         ret_list.append(create_dict_for_table_row(header_names_list, line_vals_list));
 
     logger.debug("Python logging table_to_list_of_dict the result structure: %s", json.dumps(ret_list, indent=2))
     return ret_list
+
 
 @staticmethod
 def list_of_dict_to_str(list_of_dict=None):
@@ -263,6 +300,7 @@ def list_of_dict_to_str(list_of_dict=None):
         return ""
     # Convert the list of dictionaries to a JSON string
     return json.dumps(list_of_dict, indent=4, sort_keys=False)
+
 
 @staticmethod
 def print_list_elem_per_line(list_to_print=None):
@@ -275,8 +313,10 @@ def print_list_elem_per_line(list_to_print=None):
 
 def main():
     module = AnsibleModule(argument_spec={
-      'input_table': {'type': 'str', 'required': True},
-      'method_choice': {'type': 'str', 'choices': ['list', 'list_no_header', 'list_of_dict', 'list_of_dict_unsorted_str'], 'required': True},
+        'input_table': {'type': 'str', 'required': True},
+        'method_choice': {'type': 'str',
+                          'choices': ['list', 'list_no_header', 'list_of_dict', 'list_of_dict_unsorted_str'],
+                          'required': True},
     })
 
     """
@@ -289,7 +329,6 @@ def main():
     logger = logging.getLogger(__name__)
     """
 
-
     input_table = module.params['input_table']
     method_choice = module.params['method_choice']
 
@@ -297,12 +336,12 @@ def main():
     if method_choice == 'list':
         my_result = parse_table(input_table, False)
         print(f"result = {my_result}")
-        #my_result = input_table.splitlines()
-        #my_result = [item.strip() for item in my_result]
+        # my_result = input_table.splitlines()
+        # my_result = [item.strip() for item in my_result]
         module.exit_json(changed=False, result=my_result)
     elif method_choice == 'list_no_header':
         my_result = parse_table_without_headers(input_table, 1, True, False)
-        #my_result = [item.strip() for item in my_result]
+        # my_result = [item.strip() for item in my_result]
     elif method_choice == 'list_of_dict':
         my_result = table_to_list_of_dict(input_table, 1, True)
         # Log the entire data structure as JSON
@@ -312,6 +351,7 @@ def main():
         my_result = list_of_dict_to_str(table_to_list_of_dict(input_table, 1, True))
 
     module.exit_json(changed=False, result=my_result)
+
 
 if __name__ == '__main__':
     main()

@@ -1,0 +1,566 @@
+exit all
+    configure
+#       QoS - Configuration
+        qos
+            policer-profile "policer_CRT"
+                bandwidth cir 100000 cbs 2097151 eir 0 ebs 0
+            exit
+            policer-profile "policer_C1"
+                bandwidth eir 1000000 ebs 2097151
+            exit
+            policer-profile "policer_C2"
+                bandwidth ebs 2097151
+            exit
+            policer-profile "policer_C3"
+                bandwidth ebs 2097151
+            exit
+            policer-aggregate "policer_aggregate_CRT"
+                policer profile "policer_CRT"
+            exit
+            policer-aggregate "policer_aggregate_C1"
+                policer profile "policer_C1"
+            exit
+            policer-aggregate "policer_aggregate_C2"
+                policer profile "policer_C2"
+            exit
+            policer-aggregate "policer_aggregate_C3"
+                policer profile "policer_C3"
+            exit
+            shaper-profile "gestion_inband_up"
+                bandwidth cir 960 cbs 32767
+            exit
+            shaper-profile "Shaper_NNI"
+                bandwidth cbs 12500000
+            exit
+            shaper-profile "Shaper_UNI_1GE"
+                bandwidth cir 999936 cbs 1250000
+            exit
+            shaper-profile "Shaper_UNI_10GE"
+                bandwidth cbs 12500000
+            exit
+#           WRED Profile Configuration
+            wred-profile "WREDProfile0"
+                color yellow min 100 max 100 probability 100
+            exit
+            wred-profile "WREDProfile1"
+                color yellow min 100 max 100 probability 100
+            exit
+            wred-profile "WREDProfile2"
+                color yellow min 100 max 100 probability 100
+            exit
+            wred-profile "WREDProfile3"
+                color yellow min 100 max 100 probability 100
+            exit
+            queue-block-profile "QB"
+                queue 0
+                    scheduling strict
+                    depth 1509888
+                    frame-buffers 4095
+                exit
+                queue 1
+                    scheduling strict
+                    depth 1509888
+                    frame-buffers 4095
+                exit
+                queue 2
+                    scheduling strict
+                    depth 1509888
+                    frame-buffers 4095
+                exit
+                queue 3
+                    scheduling strict
+                    depth 1509888
+                    frame-buffers 4095
+                exit
+                queue 4
+                    depth 64
+                exit
+                queue 5
+                    depth 64
+                exit
+                queue 6
+                    depth 64
+                exit
+                queue 7
+                    depth 64
+                exit
+            exit
+            queue-block-profile "Scheduling2"
+            exit
+            queue-block-profile "Scheduling3"
+            exit
+            queue-block-profile "Scheduling4"
+            exit
+#           Queue Group Configuration
+            queue-group-profile "QG_NNI"
+                queue-block 1/1
+                    profile "Scheduling2"
+                exit
+                queue-block 0/1
+                    name "QG_NNI"
+                    profile "QB"
+                    bind queue 0 queue-block 1/1
+                    shaper profile "Shaper_NNI"
+                exit
+                queue-block 0/2
+                    bind queue 1 queue-block 1/1
+                exit
+                queue-block 0/239
+                    name "gestion_inband_up"
+                    bind queue 2 queue-block 1/1
+                    shaper profile "gestion_inband_up"
+                exit
+            exit
+            queue-group-profile "QG_UNI_1GE"
+                queue-block 1/1
+                    profile "Scheduling3"
+                exit
+                queue-block 0/1
+                    name "QG_UNI_1GE"
+                    profile "QB"
+                    bind queue 0 queue-block 1/1
+                    shaper profile "Shaper_UNI_1GE"
+                exit
+                queue-block 0/2
+                    bind queue 1 queue-block 1/1
+                exit
+            exit
+            queue-group-profile "QG_UNI_10GE"
+                queue-block 1/1
+                    profile "Scheduling4"
+                exit
+                queue-block 0/1
+                    name "QG_UNI_10GE"
+                    profile "QB"
+                    bind queue 0 queue-block 1/1
+                    shaper profile "Shaper_UNI_10GE"
+                exit
+                queue-block 0/2
+                    bind queue 1 queue-block 1/1
+                exit
+            exit
+        exit
+        oam
+#           OAM EFM Configuration
+            efm
+                descriptor 2 active
+            exit
+        exit
+#       Port Configuration
+        port
+            l2cp-profile "SSM"
+                mac "01-80-c2-00-00-02" peer
+            exit
+#           Ethernet - Port Configuration
+            ethernet 0/1
+                name "ORCH=RESEAU"
+                egress-mtu 2048
+                queue-group profile "QG_NNI"
+                l2cp profile "SSM"
+                exit
+            ethernet 0/2
+		shutdown
+                name "ORCH=CLIENT"
+                functional-mode user
+                egress-mtu 2048
+                queue-group profile "QG_UNI_10GE"
+                l2cp profile "SSM"
+                tx-ssm
+		no shutdown
+            exit
+            ethernet 0/3
+                name "ORCH=CLIENT"
+                egress-mtu 2048
+                queue-group profile "QG_UNI_10GE"
+                l2cp profile "SSM"
+                tx-ssm
+            exit
+            ethernet 0/4
+                name "ORCH=CLIENT"
+                egress-mtu 2048
+                queue-group profile "QG_UNI_10GE"
+                l2cp profile "SSM"
+                tx-ssm
+            exit
+            ethernet 0/5
+                name "ORCH=CLIENT"
+                egress-mtu 2048
+                queue-group profile "QG_UNI_1GE"
+                l2cp profile "SSM"
+                tx-ssm
+            exit
+            ethernet 0/6
+                name "ORCH=CLIENT"
+                egress-mtu 2048
+                queue-group profile "QG_UNI_1GE"
+                l2cp profile "SSM"
+                tx-ssm
+            exit
+            ethernet 0/7
+                name "ORCH=CLIENT"
+                egress-mtu 2048
+                queue-group profile "QG_UNI_1GE"
+                l2cp profile "SSM"
+                tx-ssm
+            exit
+            ethernet 0/8
+                name "ORCH=CLIENT"
+                egress-mtu 2048
+                queue-group profile "QG_UNI_1GE"
+                l2cp profile "SSM"
+                tx-ssm
+            exit
+            ethernet 0/9
+                name "ORCH=CLIENT"
+                egress-mtu 2048
+                queue-group profile "QG_UNI_1GE"
+                l2cp profile "SSM"
+                tx-ssm
+            exit
+            ethernet 0/10
+                name "ORCH=CLIENT"
+                egress-mtu 2048
+                queue-group profile "QG_UNI_1GE"
+                l2cp profile "SSM"
+                tx-ssm
+            exit
+            ethernet 0/11
+                name "ORCH=CLIENT"
+                egress-mtu 2048
+                queue-group profile "QG_UNI_1GE"
+                l2cp profile "SSM"
+                tx-ssm
+            exit
+            ethernet 0/12
+                name "ORCH=CLIENT"
+                egress-mtu 2048
+                queue-group profile "QG_UNI_1GE"
+                l2cp profile "SSM"
+                tx-ssm
+            exit
+            ethernet 0/13
+                name "ORCH=CLIENT"
+                egress-mtu 2048
+                queue-group profile "QG_UNI_1GE"
+                l2cp profile "SSM"
+                tx-ssm
+            exit
+            ethernet 0/14
+                name "ORCH=CLIENT"
+                egress-mtu 2048
+                queue-group profile "QG_UNI_1GE"
+                l2cp profile "SSM"
+                tx-ssm
+            exit
+            ethernet 0/15
+                name "ORCH=CLIENT"
+                egress-mtu 2048
+                queue-group profile "QG_UNI_1GE"
+                l2cp profile "SSM"
+                tx-ssm
+            exit
+            ethernet 0/16
+                name "ORCH=CLIENT"
+                egress-mtu 2048
+                queue-group profile "QG_UNI_1GE"
+                l2cp profile "SSM"
+                tx-ssm
+            exit
+            ethernet 0/17
+                name "ORCH=CLIENT"
+                egress-mtu 2048
+                queue-group profile "QG_UNI_1GE"
+                l2cp profile "SSM"
+                tx-ssm
+            exit
+            ethernet 0/18
+                name "ORCH=CLIENT"
+                egress-mtu 2048
+                queue-group profile "QG_UNI_1GE"
+                l2cp profile "SSM"
+                tx-ssm
+            exit
+            ethernet 0/19
+                name "ORCH=CLIENT"
+                egress-mtu 2048
+                queue-group profile "QG_UNI_1GE"
+                l2cp profile "SSM"
+                tx-ssm
+	    exit
+            ethernet 0/20
+                name "ORCH=CLIENT"
+                egress-mtu 2048
+                queue-group profile "QG_UNI_1GE"
+                l2cp profile "SSM"
+                tx-ssm
+            exit
+            ethernet 0/21
+                name "ORCH=CLIENT"
+                egress-mtu 2048
+                queue-group profile "QG_UNI_1GE"
+                l2cp profile "SSM"
+                tx-ssm
+            exit
+            ethernet 0/22
+                name "ORCH=CLIENT"
+                egress-mtu 2048
+                queue-group profile "QG_UNI_1GE"
+                l2cp profile "SSM"
+                tx-ssm
+            exit
+            ethernet 0/23
+                name "ORCH=CLIENT"
+                egress-mtu 2048
+                queue-group profile "QG_UNI_1GE"
+                l2cp profile "SSM"
+                tx-ssm
+            exit
+            ethernet 0/24
+                name "ORCH=CLIENT"
+                egress-mtu 2048
+                queue-group profile "QG_UNI_1GE"
+                l2cp profile "SSM"
+                tx-ssm
+            exit
+            ethernet 0/25
+                name "ORCH=CLIENT"
+                egress-mtu 2048
+                queue-group profile "QG_UNI_1GE"
+                l2cp profile "SSM"
+                tx-ssm
+            exit
+            ethernet 0/26
+                name "ORCH=CLIENT"
+                egress-mtu 2048
+                queue-group profile "QG_UNI_1GE"
+                l2cp profile "SSM"
+                tx-ssm
+            exit
+            ethernet 0/27
+                name "ORCH=CLIENT"
+                egress-mtu 2048
+                queue-group profile "QG_UNI_1GE"
+                l2cp profile "SSM"
+                tx-ssm
+            exit
+            ethernet 0/28
+                name "ORCH=CLIENT"
+                egress-mtu 2048
+                queue-group profile "QG_UNI_1GE"
+                l2cp profile "SSM"
+                tx-ssm
+            exit
+#           Service Virtual Interface- Port Configuration
+            svi 1
+                name "SVI_PTP_Slave_1"
+                no shutdown
+            exit
+            svi 2
+                name "SVI_PTP_Master_2"
+                no shutdown
+            exit
+            svi 3
+                name "SVI_PTP_Master_3"
+                no shutdown
+            exit
+            svi 4
+                name "SVI_PTP_Master_4"
+                no shutdown
+            exit
+            svi 5
+                name "SVI_PTP_Master_5"
+                no shutdown
+            exit
+            svi 6
+                name "SVI_PTP_Master_6"
+                no shutdown
+            exit
+            svi 7
+                name "SVI_PTP_Master_7"
+                no shutdown
+            exit
+            svi 8
+                name "SVI_PTP_Master_8"
+                no shutdown
+            exit
+            svi 9
+                name "SVI_PTP_Master_9"
+                no shutdown
+            exit
+            svi 10
+                name "SVI_PTP_Master_10"
+                no shutdown
+            exit
+            svi 11
+                name "SVI_PTP_Master_11"
+                no shutdown
+            exit
+            svi 12
+                name "SVI_PTP_Master_12"
+                no shutdown
+            exit
+            svi 13
+                name "SVI_PTP_Master_13"
+                no shutdown
+            exit
+            svi 14
+                name "SVI_PTP_Master_14"
+                no shutdown
+            exit
+            svi 15
+                name "SVI_PTP_Master_15"
+                no shutdown
+            exit
+            svi 16
+                name "SVI_PTP_Master_16"
+                no shutdown
+            exit
+            svi 17
+                name "SVI_PTP_Master_17"
+                no shutdown
+            exit
+            svi 18
+                name "SVI_PTP_Master_18"
+                no shutdown
+            exit
+            svi 19
+                name "SVI_PTP_Master_19"
+                no shutdown
+            exit
+            svi 20
+                name "SVI_PTP_Master_20"
+                no shutdown
+            exit
+            svi 21
+                name "SVI_PTP_Master_21"
+                no shutdown
+            exit
+            svi 22
+                name "SVI_PTP_Master_22"
+                no shutdown
+            exit
+            svi 23
+                name "SVI_PTP_Master_23"
+                no shutdown
+            exit
+            svi 24
+                name "SVI_PTP_Master_24"
+                no shutdown
+            exit
+            svi 25
+                name "SVI_PTP_Master_25"
+                no shutdown
+            exit
+            svi 26
+                name "SVI_PTP_Master_26"
+                no shutdown
+            exit
+            svi 27
+                name "SVI_PTP_Master_27"
+                no shutdown
+            exit
+            svi 28
+                name "SVI_PTP_Master_28"
+                no shutdown
+            exit
+            svi 95
+                name "SVI_95_Management in-band"
+                no shutdown
+            exit
+        exit
+#       Bridge Configuration
+        bridge 1
+            name "BRIDGE 1"
+            aging-time 3000
+#           Bridge Port Configuration
+            port 1
+                name "ETX-2i-10G_CEMX_V18 10000M CRT=100M C1=1000M C2=10000M"
+                no shutdown
+            exit
+            port 2
+                no shutdown
+            exit
+            port 3
+                no shutdown
+            exit
+            port 4
+                no shutdown
+            exit
+            port 5
+                no shutdown
+            exit
+            port 6
+                no shutdown
+            exit
+            port 7
+                no shutdown
+            exit
+            port 8
+                no shutdown
+            exit
+            port 9
+                no shutdown
+            exit
+            port 10
+                no shutdown
+            exit
+            port 11
+                no shutdown
+            exit
+            port 12
+                no shutdown
+            exit
+            port 13
+                no shutdown
+            exit
+            port 14
+                no shutdown
+            exit
+            port 15
+                no shutdown
+            exit
+            port 16
+                no shutdown
+            exit
+            port 17
+                no shutdown
+            exit
+            port 18
+                no shutdown
+            exit
+            port 19
+                no shutdown
+            exit
+            port 20
+                no shutdown
+            exit
+            port 21
+                no shutdown
+            exit
+            port 22
+                no shutdown
+            exit
+            port 23
+                no shutdown
+            exit
+            port 24
+                no shutdown
+            exit
+            port 25
+                no shutdown
+            exit
+            port 26
+                no shutdown
+            exit
+            port 27
+                no shutdown
+            exit
+            port 28
+                no shutdown
+            exit
+#           VLAN Configuration
+            vlan 1000
+                mode e-tree
+                root 1
+            exit
+        exit
