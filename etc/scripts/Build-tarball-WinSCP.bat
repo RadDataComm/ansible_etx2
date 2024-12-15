@@ -66,9 +66,11 @@ echo Linux station %NETAUTO_LINUX%
 echo TARBALL_NAME is %TARBALL_NAME%
 echo ================================
 
-echo set build version as tag in %GALAXY_YML%
-set BUILD_VERSION_TAG=build.version.tag_%VERSION_INPUT%
-powershell -Command "(gc %GALAXY_YML%) -replace 'build.version.tag_.*$', '%BUILD_VERSION_TAG%' | Out-File -encoding ASCII %GALAXY_YML%"
+@rem echo set build version as tag in %GALAXY_YML%
+@rem set BUILD_VERSION_TAG=build.version.tag_%VERSION_INPUT%
+@rem powershell -Command "(gc %GALAXY_YML%) -replace 'build.version.tag_.*$', '%BUILD_VERSION_TAG%' | Out-File -encoding ASCII %GALAXY_YML%"
+echo set build version as tag in %PRJ_ROOT%\version.txt
+echo build.version.tag=%VERSION_INPUT% > %PRJ_ROOT%\version.txt
 
 set NETAUTO_LINUX_ROOT_DIR=/home/nmsdev/netauto
 set NETAUTO_LINUX_DIR=%NETAUTO_LINUX_ROOT_DIR%/%ANSIBLE_PRJ%/%PRJ_VERSION%/%ANSIBLE_PRJ%
@@ -92,6 +94,7 @@ echo call mkdir -p %NETAUTO_LINUX_ROOT_DIR%/tarballs >> %WinSCP_SCR%
 echo option transfer ascii >> %WinSCP_SCR%
 @rem echo lcd C:\java\build\ems_synergy\root\projects\netauto\%ANSIBLE_PRJ%\etc
 @rem echo lcd %~dp0 >> %WinSCP_SCR%
+echo put %PRJ_ROOT%\version.txt %NETAUTO_LINUX_DIR%/version.txt >> %WinSCP_SCR%
 echo put %PRJ_ROOT%\CHANGELOG.rst %NETAUTO_LINUX_DIR%/CHANGELOG.rst >> %WinSCP_SCR%
 echo put %PRJ_ROOT%\galaxy.yml %NETAUTO_LINUX_DIR%/galaxy.yml >> %WinSCP_SCR%
 echo put %PRJ_ROOT%\LICENSE %NETAUTO_LINUX_DIR%/LICENSE >> %WinSCP_SCR%
