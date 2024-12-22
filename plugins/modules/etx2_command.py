@@ -64,7 +64,7 @@ stdout_lines:
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import to_lines
-from ansible_collections.rad.etx2.plugins.module_utils.network.etx2 import run_commands
+from ansible_collections.rad.etx2.plugins.module_utils.network.etx2.etx2 import run_commands
 
 
 def main():
