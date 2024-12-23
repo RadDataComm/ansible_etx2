@@ -1,0 +1,55 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    # galaxy_api_key: "{{ undef(hint='You must specify your Galaxy API key') }}"
+    # export ANSIBLE_GALAXY_TOKEN=token
+    # login with github account to galaxy.ansible, Collections, API Token
+    # export ANSIBLE_GALAXY_TOKEN=token
+    # 4116404f3f9968ed5ac6a9baad073ea3ad335e8a
+    # tar_gz should be set via the command line at runtime.
+    # --extra-vars => -e "tar_gz=raddatacommunications-etx2-1.0.0.tar.gz"
+    # tar_gz: "{{ undef(hint='You must specify your tarball!') }}"
+    # install from source ansible-galaxy collection install git+https://github.com/RADNMSDEV/ansible_etx2.git  --force
+    tar_gz: ''
+    tarball_dir: /home/nmsdev/netauto/tarballs
+
+  pre_tasks:
+    - name: Ensure the tar_gz was passed.
+      fail:
+        msg: tar_gz must be passed on command line -e "tar_gz=rad-etx2-1.0.0.tar.gz".
+      when: "tar_gz == ''"
+
+    - name: Check that tarball exists
+      delegate_to: localhost
+      stat:
+        path: "{{ tarball_dir }}/{{ tar_gz }}"
+      register: file_status
+    - name: Fail on missing tarball
+      fail:
+        msg: missing tarball {{ tarball_dir }}/{{ tar_gz }}
+      when: not file_status.stat.exists
+
+    - name: Ensure the ANSIBLE_GALAXY_TOKEN environment variable is set.
+      fail:
+        msg: ANSIBLE_GALAXY_TOKEN is not set.
+      when: "lookup('env','ANSIBLE_GALAXY_TOKEN') == ''"
+
+    - name: Ensure the ~/.ansible directory exists.
+      file:
+        path: ~/.ansible
+        state: directory
+
+    - name: Write the Galaxy token to ~/.ansible/galaxy_token
+      copy:
+        content: |
+          token: {{ lookup('env','ANSIBLE_GALAXY_TOKEN') }}
+        dest: ~/.ansible/galaxy_token
+
+  tasks:
+   - name: Publish the collection.
+      command:
+        chdir: /home/nmsdev/netauto/tarballs
+        cmd: ansible-galaxy collection publish {{ tar_gz }}
