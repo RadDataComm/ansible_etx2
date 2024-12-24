@@ -1,8 +1,8 @@
-.. _rad.etx2.rad_cliconf:
+.. _raddatacomm.etx2.rad_cliconf:
 
 
 ************
-rad.etx2.rad
+raddatacomm.etx2.rad
 ************
 
 **Use rad cliconf to run command on RAD ETX-2 platform**

@@ -3,7 +3,7 @@
 # The namespace of the collection. This can be a company/brand/organization or product namespace under which all
 # content lives. May only contain alphanumeric lowercase characters and underscores. Namespaces cannot start with
 # underscores or numbers and cannot contain consecutive underscores
-namespace: rad
+namespace: raddatacomm
 
 # The name of the collection. Has the same character restrictions as 'namespace'
 name: etx2
@@ -30,7 +30,7 @@ description: A collection of Ansible plugins and modules for managing the RAD ET
 # accepts L(SPDX,https://spdx.org/licenses/) licenses. This key is mutually exclusive with 'license_file'
 # license:
 # - GPL-2.0-or-later
-license: GPL-3.0-or-later
+# license: GPL-3.0-or-later
 
 # The path to the license file for the collection. This path is relative to the root of the collection. This key is
 # mutually exclusive with 'license'
@@ -55,6 +55,7 @@ dependencies:
 
 # The URL of the originating SCM repository
 # repository: http://example.com/repository
+repository: https://github.com/RadDataComm/ansible_etx2
 
 # The URL to any online docs
 # documentation: http://docs.example.com

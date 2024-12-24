@@ -6,12 +6,12 @@
     ansible_user: su
     ansible_password: 1234
     ansible_connection: ansible.netcommon.network_cli
-    ansible_network_os: rad.etx2.rad
+    ansible_network_os: raddatacomm.etx2.rad
 
   tasks:
 
     - name: "Execute CLI script 2i_10g_pre_script from file"
-      rad.etx2.etx2_command:
+      raddatacomm.etx2.etx2_command:
         commands: "{{ lookup('file', '/tmp/etc/2i_10g_pre_script.txt') | split('\n') }}"
       register: echo
       

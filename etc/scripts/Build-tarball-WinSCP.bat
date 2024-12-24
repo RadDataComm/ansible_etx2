@@ -3,7 +3,7 @@
 @rem  172.18.178.111 (defaults to this address) LINUX MACHINE where tarball will be built
 @rem  optional collection version - will be constructed from galaxy.yml / version:
 @rem  optional tarball base name - rad-etx2, will be constructed from galaxy.yml / namespace: and name:
-setlocal
+setlocal EnableExtensions EnableDelayedExpansion
 
 set ANSIBLE_PRJ=ansible_etx2
 
@@ -40,7 +40,7 @@ if "%2" NEQ "" (
 	set VERSION_INPUT=%2
 )
 
-set NAMESPACE=rad
+set NAMESPACE=raddatacomm
 set MODULE=etx2
 set TARBALL_BASE_NAME=namespace-name
 if "%3" NEQ "" (
@@ -52,9 +52,9 @@ set TARBALL_BASE_NAME=%3
 		For /F "tokens=1,2" %%A in ('findstr /C:"namespace: " %GALAXY_YML%') Do Set NAMESPACE=%%B
 		For /F "tokens=1,2" %%A in ('findstr /C:"name: " %GALAXY_YML%') Do Set NAME=%%B
 	)
-	set TARBALL_BASE_NAME=%NAMESPACE%-%MODULE%
+	set TARBALL_BASE_NAME=!NAMESPACE!-!MODULE!
 )
-
+@rem echo TARBALL_BASE_NAME is %TARBALL_BASE_NAME%
 set TARBALL_NAME=%TARBALL_BASE_NAME%-%PRJ_VERSION%.tar.gz
 
 if exist %BUILD_ROOT%\%TARBALL_NAME% del %BUILD_ROOT%\%TARBALL_NAME% 
@@ -65,6 +65,7 @@ echo build directory %BUILD_ROOT%
 echo Linux station %NETAUTO_LINUX%
 echo TARBALL_NAME is %TARBALL_NAME%
 echo ================================
+echo %TARBALL_NAME% > %~dp0~tarball_name.txt
 
 @rem echo set build version as tag in %GALAXY_YML%
 @rem set BUILD_VERSION_TAG=build.version.tag_%VERSION_INPUT%

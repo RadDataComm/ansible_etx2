@@ -1,8 +1,8 @@
-.. _rad.etx2.etx2_command_module:
+.. _raddatacomm.etx2.etx2_command_module:
 
 
 *************************
-rad.etx2.etx2_command
+raddatacomm.etx2.etx2_command
 *************************
 
 **Module to run commands on remote ETX-2 devices.**
@@ -69,18 +69,18 @@ Examples
 .. code-block:: yaml
 
     - name: "Read device system information"
-      rad.etx2.etx2_command:
+      raddatacomm.etx2.etx2_command:
         commands:
         - show configure system device-information
       register: dev_info
 
     - name: "Execute CLI script from file"
-      rad.etx2.etx2_command:
+      raddatacomm.etx2.etx2_command:
         commands: "{{ lookup('file', './sys-commands.txt') | split('\n') }}"
       register: echo
 
     - name: "Wait for completion of copy operation"
-      rad.etx2.etx2_command:
+      raddatacomm.etx2.etx2_command:
         commands: show file copy
       register: result
       until: "'Transferring Data' not in result.stdout[0]"

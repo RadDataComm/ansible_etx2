@@ -20,12 +20,12 @@ The RAD ETX-2 collection supports ``network_cli`` connections.
 ### Cliconf plugins
 Name | Description
 --- | ---
-[rad.etx2.rad](https://github.com/ansible-collections/rad.etx2/blob/main/docs/rad.etx2.rad_cliconf.rst)|Use rad cliconf to run command/s on RAD Data Communications platforms
+[raddatacomm.etx2.rad](https://github.com/raddatacomm/ansible_etx2/blob/main/docs/raddatacomm.etx2.rad_cliconf.rst)|Use rad cliconf to run command/s on RAD Data Communications platforms
 
 ### Modules
 Name | Description
 --- | ---
-[rad.etx2.etx2_command](https://github.com/ansible-collections/rad.etx2/blob/main/docs/rad.etx2.etx2_command_module.rst)|Module to run commands on remote ETX-2 devices
+[raddatacomm.etx2.etx2_command](https://github.com/raddatacomm/ansible_etx2/blob/main/docs/raddatacomm.etx2.etx2_command_module.rst)|Module to run commands on remote ETX-2 devices
 
 <!--end collection content-->
 
@@ -34,25 +34,25 @@ Name | Description
 
 You can install the RAD ETX-2 collection with the Ansible Galaxy CLI:
 
-    ansible-galaxy collection install rad.etx2
+    ansible-galaxy collection install raddatacomm.etx2
 
 You can also include it in a `requirements.yml` file and install it with `ansible-galaxy collection install -r requirements.yml`, using the format:
 
 ```yaml
 ---
 collections:
-  - name: rad.etx2
+  - name: raddatacomm.etx2
 ```
 
 ### Using modules from the RAD ETX-2 collection in your playbooks
 
-You can call modules by their Fully Qualified Collection Namespace (FQCN), such as `rad.etx2.etx2_command`.
+You can call modules by their Fully Qualified Collection Namespace (FQCN), such as `raddatacomm.etx2.etx2_command`.
 The following example task makes changes in the existing configuration on an ETX-2 network device, using the FQCN:
 
 ```yaml
 ---
  - name: Basic Configuration
-   rad.etx2.etx2_command:
+   raddatacomm.etx2.etx2_command:
      commands:
      - configure system location Stockholm
      - configure management dscp 4

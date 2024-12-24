@@ -37,14 +37,14 @@ options:
 
 EXAMPLES = """
 - name: Basic Configuration
-  ansible.legacy.etx2_command:
+  ansible.raddatacomm.etx2_command:
     commands:
     - show configure system device-information
     - configure management dscp 4
   register: result
 
 - name: Get output from single command
-  ansible.legacy.etx2_command:
+  ansible.raddatacomm.etx2_command:
     commands: show configure system memory
   register: result
 """
@@ -64,7 +64,7 @@ stdout_lines:
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import to_lines
-from ansible_collections.rad.etx2.plugins.module_utils.network.etx2.etx2 import run_commands
+from ansible_collections.raddatacomm.etx2.plugins.module_utils.network.etx2.etx2 import run_commands
 
 
 def main():
