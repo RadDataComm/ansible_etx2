@@ -1,7 +1,0 @@
-# Create two management targets
-configure management snmp target Domain2
-exit all
-configure management snmp
-target Domain3
-address udp-ipv4-domain 172.17.233.70
-exit all
