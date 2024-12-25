@@ -37,7 +37,7 @@ echo git remove etc from staging
 git rm -r --cached etc/
 git commit -m "GITHUB preparation, removed etc"
 set /a EXIT_CODE=%ERRORLEVEL%
-echo push to github uncomment or runa manually following git commands
+echo push to github uncomment or run manually following git commands - see in batch
 @rem git remote set-url origin %GIT_REMOTE%
 @rem git branch -M main
 @rem git push -u origin main
