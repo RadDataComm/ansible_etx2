@@ -42,6 +42,7 @@ license_file: LICENSE
 # tags: []
 tags:
   - rad
+  - raddatacomm
   - etx2
   - networking
 
@@ -65,6 +66,7 @@ repository: https://github.com/RadDataComm/ansible_etx2
 
 # The URL to the collection issue tracker
 # issues: http://example.com/issue/tracker
+issues: https://github.com/RadDataComm/ansible_etx2/issues
 
 # A list of file glob-like patterns used to filter any files or directories that should not be included in the build
 # artifact. A pattern is matched from the relative path of the file or directory of the collection directory. This
@@ -81,4 +83,3 @@ repository: https://github.com/RadDataComm/ansible_etx2
 manifest:
   directives:
     - recursive-exclude etc **
-

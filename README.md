@@ -72,7 +72,7 @@ Please read and familiarize yourself with this document.
 
 ## Release notes
 
-Release notes are available [here](https://github.com/ansible-collections/rad.etx2/blob/main/CHANGELOG.rst).
+Release notes are available [here](https://github.com/raddatacomm/ansible_etx2/blob/main/CHANGELOG.rst).
 
 ## More information
 
