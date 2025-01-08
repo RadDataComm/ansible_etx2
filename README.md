@@ -2,7 +2,7 @@
 
 The Ansible RAD ETX-2 collection includes a variety of Ansible content to help automate the management of RAD ETX-2 network devices.
 
-This collection has been tested against ETX-2 version 6.8.5(4.46)
+This collection has been tested against ETX-2 versions 6.7.1 and 6.8.5
 
 <!--start requires_ansible-->
 ## Ansible version compatibility
